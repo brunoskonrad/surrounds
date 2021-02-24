@@ -239,6 +239,7 @@ DEPENDENCIES
   puma (~> 5.0)
   rack-mini-profiler (~> 2.0)
   rails (~> 6.1.0)
+  rgeo
   rspec-rails (~> 4.0.2)
   sass-rails (>= 6)
   selenium-webdriver

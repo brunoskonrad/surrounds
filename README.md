@@ -1,24 +1,7 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Useful links
 
-Things you may want to cover:
+https://github.com/rgeo/rgeo-activerecord/blob/99f70612ae5c94caae092566a0c9324593995b3f/lib/rgeo/active_record/arel_spatial_queries.rb#L45-L47
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+https://github.com/stadia/activerecord-mysql2rgeo-adapter/blob/master/test/spatial_queries_test.rb
