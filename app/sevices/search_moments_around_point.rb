@@ -15,14 +15,10 @@ class SearchMomentsAroundPoint < ApplicationService
 
   def moment_is_inside_search_radius
     Arel
-      .spatial(point_as_text)
+      .spatial("POINT(#{point.x} #{point.y})")
       .st_srid(4326)
       .st_distance(Moment.arel_table[:position])
       .lt(search_radius)
-  end
-
-  def point_as_text
-    "POINT(#{point.x} #{point.y})"
   end
 
 end
