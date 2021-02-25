@@ -62,3 +62,9 @@ RSpec.configure do |config|
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
 end
+
+require "support/factory_bot"
+
+def spec_point(x, y)
+  RGeo::Cartesian.factory(srid: 4326).point(x, y)
+end
