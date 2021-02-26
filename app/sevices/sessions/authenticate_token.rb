@@ -1,8 +1,8 @@
 module Sessions
   class AuthenticateToken < ApplicationService
 
-    class EmptyTokenError < StandardError; end
-    class AccountNotFoundError < StandardError; end
+    class EmptyTokenError < UnauthorizedError; end
+    class AccountNotFoundError < UnauthorizedError; end
 
     attr_reader :token
 
@@ -11,12 +11,16 @@ module Sessions
     end
 
     def call
-      raise AuthenticateToken::EmptyTokenError if token.nil?
+      raise AuthenticateToken::EmptyTokenError.new(
+        "Token is required to perform operation."
+      ) if token.nil? || token.empty?
 
       session = Session.find_by(token: token)
       case session
         in nil
-          raise AuthenticateToken::AccountNotFoundError if session.nil?
+          raise AuthenticateToken::AccountNotFoundError.new(
+            "Provided token is not valid."
+          ) if session.nil?
         else
           session.account
       end

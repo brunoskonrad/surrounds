@@ -1,9 +1,9 @@
 module Sessions
   class CreateSession < ApplicationService
 
-    class WrongInputError < StandardError; end
-    class AccountNotFoundError < StandardError; end
-    class InvalidPasswordError < StandardError; end
+    class WrongInputError < WrongInputError; end
+    class AccountNotFoundError < WrongInputError; end
+    class InvalidPasswordError < WrongInputError; end
 
     def initialize(email, password)
       @email = email
@@ -11,16 +11,27 @@ module Sessions
     end
 
     def call
-      raise CreateSession::WrongInputError if @email.nil? || @password.nil?
+      raise CreateSession::WrongInputError.new(
+        "Email or password are missing"
+      ) if @email.nil? || @email.empty? || @password.nil? || @password.empty?
 
       account = Account.find_by(email: @email)
 
-      raise CreateSession::AccountNotFoundError if account.nil?
+      raise CreateSession::AccountNotFoundError.new(
+        "Email or password are wrong"
+      ) if account.nil?
 
       if account.authenticate(@password)
-        Session.create(token: SecureRandom.uuid, account: account)
+        ActiveRecord::Base.transaction do
+          # Remove existing sessions just for security reasons, ya know?
+          account.sessions.each do |session|
+            Sessions::DestroySession.call(session.token)
+          end
+
+          Session.create(token: SecureRandom.uuid, account: account)
+        end
       else
-        raise CreateSession::InvalidPasswordError
+        raise CreateSession::InvalidPasswordError.new("Email or password are wrong")
       end
     end
 

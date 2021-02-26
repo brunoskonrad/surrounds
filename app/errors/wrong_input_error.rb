@@ -1,0 +1,1 @@
+class WrongInputError < StandardError; end
