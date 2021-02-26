@@ -11,15 +11,8 @@ module Sessions
     end
 
     def call
-      raise CreateSession::WrongInputError.new(
-        "Email or password are missing"
-      ) if @email.nil? || @email.empty? || @password.nil? || @password.empty?
-
-      account = Account.find_by(email: @email)
-
-      raise CreateSession::AccountNotFoundError.new(
-        "Email or password are wrong"
-      ) if account.nil?
+      validate_input
+      validate_if_account_exists
 
       if account.authenticate(@password)
         ActiveRecord::Base.transaction do
@@ -33,6 +26,24 @@ module Sessions
       else
         raise CreateSession::InvalidPasswordError.new("Email or password are wrong")
       end
+    end
+
+    private
+
+    def account
+      @account ||= Account.find_by(email: @email)
+    end
+
+    def validate_input
+      raise CreateSession::WrongInputError.new(
+        "Email or password are missing"
+      ) if @email.nil? || @email.empty? || @password.nil? || @password.empty?
+    end
+
+    def validate_if_account_exists
+      raise CreateSession::AccountNotFoundError.new(
+        "Email or password are wrong"
+      ) if account.nil?
     end
 
   end
